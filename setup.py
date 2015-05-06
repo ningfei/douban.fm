@@ -18,6 +18,7 @@ setup(name='douban.fm',
       url='https://github.com/taizilongxu/douban.fm',
       license='MIT',
       packages=['douban'],
+      package_data={'douban': ['colorset/*']},
       include_package_data=True,
       zip_safe=True,
       install_requires=[
