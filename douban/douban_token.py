@@ -89,10 +89,11 @@ class Doubanfm(object):
         self.login_data = {}
         self.lastfm = True  # lastfm 登陆
 
-    def init_login(self):
+    def init_login(self, update=False):
         print LOGO
         self.douban_login()  # 登陆
         self.lastfm_login()  # 登陆 last.fm
+        self.update = update
         print '\033[31m♥\033[0m Get channels ',
         self.get_channels()  # 获取频道列表
         print '[\033[32m OK \033[0m]'
@@ -242,13 +243,21 @@ class Doubanfm(object):
 
     def get_channels(self):
         '''获取channel列表，将channel name/id存入self._channel_list'''
-        # 红心兆赫需要手动添加
-        self._channel_list = [{
-            'name': '红心兆赫',
-            'channel_id': -3
-        }]
-        r = requests.get('http://www.douban.com/j/app/radio/channels')
-        self._channel_list += json.loads(r.text, object_hook=_decode_dict)['channels']
+        if self.update or not os.path.exists(config.PATH_CHANNEL):
+        	print 'dasdsa'
+	        # 红心兆赫需要手动添加
+	        self._channel_list = [{
+	            'name': '红心兆赫',
+	            'channel_id': -3
+	        }]
+	        r = requests.get('http://www.douban.com/j/app/radio/channels')
+	        self._channel_list += json.loads(r.text, object_hook=_decode_dict)['channels']
+	        with open(config.PATH_CHANNEL, 'w') as f:
+	        	pickle.dump(self._channel_list, f)
+	        	logger.debug('Write data to ' + config.PATH_CHANNEL)
+        else:
+            with open(config.PATH_CHANNEL, 'r') as f:
+	    	    self._channel_list = pickle.load(f)
 
     @property
     def channels(self):

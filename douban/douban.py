@@ -18,6 +18,7 @@ import time
 import os
 import sys
 import logging
+import argparse
 
 # root logger config
 logging.basicConfig(
@@ -98,7 +99,7 @@ class Win(cli.Cli):
         super(Win, self).__init__(self.lines)
 
         self.TITLE += \
-            color_func(self.c['TITLE']['doubanfm'])(' Douban Fm ') \
+            color_func(self.c['TITLE']['doubanfm'])(' Douban FM ') \
             if not self.douban.lastfm\
             else color_func(self.c['TITLE']['doubanfm'])(' Last.fm ')
 
@@ -123,7 +124,7 @@ class Win(cli.Cli):
         cli.Cli.LOVE = color_func(self.c['PLAYINGSONG']['like'])(' ❤ ', 'red')
 
         self.TITLE = cli.Cli.TITLE +\
-            color_func(self.c['TITLE']['doubanfm'])(' Douban Fm ') \
+            color_func(self.c['TITLE']['doubanfm'])(' Douban FM ') \
             if not self.douban.lastfm\
             else color_func(self.c['TITLE']['doubanfm'])(' Last.fm ')
 
@@ -745,8 +746,11 @@ class History(cli.Cli):
 
 
 def main():
+    parser = argparse.ArgumentParser(description='Douban FM')
+    parser.add_argument('update', nargs='?', type=bool, default=False)
+    args = parser.parse_args()
     douban = douban_token.Doubanfm()
-    douban.init_login()  # 登录
+    douban.init_login(args.update)  # 登录
     Win(douban)
 
 if __name__ == '__main__':
