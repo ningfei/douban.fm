@@ -123,8 +123,7 @@ class Win(cli.Cli):
     def reload_theme(self):
         # 箭头所指行前缀
         cli.Cli.PREFIX_SELECTED = color_func(self.c['LINE']['arrow'])('  > ')
-        cli.Cli.LOVE = color_func(self.c['PLAYINGSONG']['like'])(' ❤ ', 'red')
-
+        cli.Cli.LOVE = color_func(self.c['PLAYINGSONG']['like'])('♥')
         self.TITLE = cli.Cli.TITLE +\
             color_func(self.c['TITLE']['doubanfm'])(' Douban FM ') \
             if not self.douban.lastfm\
@@ -147,13 +146,13 @@ class Win(cli.Cli):
         artist = color_func(self.c['PLAYINGSONG']['artist'])(song['artist'])
         public_time = color_func(self.c['PLAYINGSONG']['publictime'])(song['public_time']) or ''
         self.SUFFIX_SELECTED = (
-            love +
+            love + ' ' +
             title + ' • ' +
             albumtitle + ' • ' +
             artist + ' ' +
             public_time
         ).replace('\\', '')
-
+        
     def thread(self, target, args=()):
         '''启动新线程'''
         threading.Thread(target=target, args=args).start()
