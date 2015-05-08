@@ -252,6 +252,7 @@ class Doubanfm(object):
 	        }]
 	        r = requests.get('http://www.douban.com/j/app/radio/channels')
 	        self._channel_list += json.loads(r.text, object_hook=_decode_dict)['channels'][0:22]
+	        self._channel_list = [{'name': c['name'],'channel_id': c['channel_id']} for c in self._channel_list] 
 	        with open(config.PATH_CHANNEL, 'w') as f:
 	        	pickle.dump(self._channel_list, f)
 	        	logger.debug('Write data to ' + config.PATH_CHANNEL)
