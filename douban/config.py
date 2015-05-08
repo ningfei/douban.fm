@@ -5,11 +5,15 @@ import json
 import ConfigParser
 import cPickle as pickle
 
-
-PATH_CONFIG = os.path.expanduser("~/.doubanfm_config")
-PATH_HISTORY = os.path.expanduser('~/.doubanfm_history')
-PATH_TOKEN = os.path.expanduser('~/.doubanfm_token')
-PATH_CHANNEL = os.path.expanduser('~/.doubanfm_channel')
+config_folder = os.path.expanduser('~/.doubanfm')
+if not os.path.exists(config_folder):
+    os.mkdir(config_folder)
+    
+PATH_CONFIG = os.path.expanduser(config_folder+'/config')
+PATH_HISTORY = os.path.expanduser(config_folder+'/history')
+PATH_TOKEN = os.path.expanduser(config_folder+'/token')
+PATH_CHANNEL = os.path.expanduser(config_folder+'/channel')
+PATH_COOKIE = os.path.expanduser(config_folder+'/cookie')
 CONFIG = '''
 [key]
 UP = k

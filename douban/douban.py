@@ -25,7 +25,7 @@ logging.basicConfig(
     format="%(asctime)s - \
 [%(process)d]%(filename)s:%(lineno)d - %(levelname)s: %(message)s",
     datefmt='%Y-%m-%d %H:%I:%S',
-    filename=os.path.expanduser('~/.doubanfm.log'),
+    filename=os.path.expanduser('~/.doubanfm/log'),
     level=logging.WARNING
 )
 
@@ -104,8 +104,10 @@ class Win(cli.Cli):
             else color_func(self.c['TITLE']['doubanfm'])(' Last.fm ')
 
         self.TITLE += '\ ' + \
-            color_func(self.c['TITLE']['username'])(self.douban.user_name) + \
-            ' >>\r'
+            color_func(self.c['TITLE']['username'])(self.douban.user_name + \
+            u' 累计收听' + self.douban.played + u'首 加红星' + \
+            self.douban.liked + u'首 收藏兆赫' + self.douban.faved + u'个') + \
+            ' \ >>\r'
 
         # 启动自动播放
         self.markline = self.displayline = self._channel
@@ -129,8 +131,10 @@ class Win(cli.Cli):
             else color_func(self.c['TITLE']['doubanfm'])(' Last.fm ')
 
         self.TITLE += '\ ' + \
-            color_func(self.c['TITLE']['username'])(self.douban.user_name) + \
-            ' >>'
+            color_func(self.c['TITLE']['username'])(self.douban.user_name + \
+            u' 累计收听' + self.douban.played + u'首 加红星' + \
+            self.douban.liked + u'首 收藏兆赫' + self.douban.faved + u'个') + \
+            ' \ >>'
         self.set_suffix_selected(self.playingsong)
 
     def set_suffix_selected(self, song):
@@ -201,7 +205,7 @@ class Win(cli.Cli):
                     color_func(self.c['TITLE']['state'])(title_loop)
                 ]
                 self.TITLE = \
-                    self.TITLE[:length - 1] + ' ' + ' '.join(title) + '\r'
+                    self.TITLE[:length - 1] + ' ' + ' '.join(title).decode('utf-8') + '\r'
             else:
                 self.TITLE = self.TITLE[:length]
             self.display()

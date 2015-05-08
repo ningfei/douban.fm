@@ -20,7 +20,7 @@ if PLATFORM == 'Darwin':
         pass
 
 
-def send_notification(title="Douban.fm", content="", cover_file=None):
+def send_notification(title="douban.fm", content="", cover_file=None):
     '''发送桌面通知'''
     if PLATFORM == 'Linux':
         send_Linux_notify(title, content, cover_file)
@@ -33,7 +33,7 @@ def send_Linux_notify(title, content, img_path):
     # Note: GNOME 下需要有任意的用户操作（鼠标、键盘等）才会自动隐藏通知
     command = [
         'notify-send',
-        '-a', 'Douban.fm',  # 发送通知的应用名
+        '-a', 'douban.fm',  # 发送通知的应用名
         '-t', '5000',       # 自动隐藏的时间
         '--hint=int:transient:1',   # *建议* 桌面管理器不要保留通知
     ]
