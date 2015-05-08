@@ -45,6 +45,8 @@ import config
 import json
 import psutil
 import re
+import string
+import random
 
 LOGO = '''
 [38;5;202m⡇       ⡆  ⡀    ⣄       ⣆       ⡄⢀      ⢀⡄          ⡄              ⢠⡇           (B[m
@@ -179,14 +181,14 @@ class Doubanfm(object):
             self.playingsong['length']
         )
 
-    def build_login_form(self):
+    def build_login_form(self, bid='"01234567890"'):
         '''构造登录表单'''
         
         s = requests.session()
         print 'Retrieve Captcha...'
-        resp = s.get('http://douban.fm/j/new_captcha')
+        resp = s.get('http://douban.fm/j/new_captcha', cookies={'bid': bid})
         captcha_id = resp.text.strip('"').encode('ascii')
-        resp = s.get('http://douban.fm/misc/captcha?size=m&id=%s' % captcha_id)
+        resp = s.get('http://douban.fm/misc/captcha?size=m&id=%s' % captcha_id, cookies={'bid': bid})
         Image.open(StringIO(resp.content)).show()
         captcha = raw_input('验证码: ')
         [proc.kill() for proc in psutil.process_iter() if proc.name() == 'display']
@@ -243,20 +245,21 @@ class Doubanfm(object):
             self.faved = re.findall('faved">(\d+?)<',resp.text)[0]
         else:
             # 未登陆
-            logger.info('First time logging in Douban.fm.')
+            logger.info('First time logging in douban.fm.')
+            bid = '"'+ ''.join(random.choice(string.ascii_letters + string.digits) for x in range(11)) + '"'
             while True:
                 self.email = raw_input('Email: ')
                 self.password = getpass.getpass('Password: ')
-                
+                bid = '"'+ ''.join(random.choice(string.ascii_letters + string.digits) for x in range(11)) + '"'
                 # 获取cookie
-                form = self.build_login_form()                
-                resp = requests.post('http://douban.fm/j/login', data=form['data'], headers=form['headers'])
+                form = self.build_login_form(bid)              
+                resp = requests.post('http://douban.fm/j/login', data=form['data'], headers=form['headers'], cookies={'bid': bid})
                 dic = json.loads(resp.text, object_hook=_decode_dict)
                 if dic['r'] == 1:
                     logger.debug(dic['err_msg'])
                     continue
                 else:
-                    self.cookie = {'bid': resp.cookies['bid'], 'dbcl2': resp.cookies['dbcl2'], 'fmNlogin': resp.cookies['fmNlogin']}
+                    self.cookie = {'bid': bid, 'dbcl2': resp.cookies['dbcl2'], 'fmNlogin': '"y"'}
                     logger.info('Get cookie successfully!')
                     with open(config.PATH_COOKIE, 'w') as f:
                         pickle.dump(self.cookie, f)
@@ -274,7 +277,7 @@ class Doubanfm(object):
                     'email': self.email,
                     'password': self.password
                 }
-                resp = requests.post('http://www.douban.com/j/app/login', login_data)
+                resp = requests.post('http://www.douban.com/j/app/login', login_data, cookies={'bid': bid})
                 dic = json.loads(resp.text, object_hook=_decode_dict)
                 if dic['r'] == 1:
                     logger.debug(dic['err'])
@@ -313,7 +316,7 @@ class Doubanfm(object):
 	            'channel_id': -3
 	        }]
 	        # 固定兆赫
-	        r = requests.get('http://www.douban.com/j/app/radio/channels')
+	        r = requests.get('http://www.douban.com/j/app/radio/channels', cookies=self.cookie)
 	        self._channel_list += json.loads(r.text, object_hook=_decode_dict)['channels'][0:22]
 	        self._channel_list = [{'name': c['name'],'channel_id': c['channel_id']} for c in self._channel_list]
 	        # 收藏兆赫
@@ -344,7 +347,7 @@ class Doubanfm(object):
             post_data[x] = data[x]
         url = 'http://www.douban.com/j/app/radio/people?' + urllib.urlencode(post_data)
         try:
-            s = requests.get(url)
+            s = requests.get(url, cookies=self.cookie)
         except requests.exceptions.RequestException:
             logger.error("Error communicating with Douban.fm API.")
 
@@ -391,7 +394,7 @@ class Doubanfm(object):
                 'ssid': playingsong['ssid'],
             }
             s = requests.session()
-            response = s.post(url, data=postdata)
+            response = s.post(url, data=postdata, cookies=self.cookie)
             lyric = json.loads(response.text, object_hook=_decode_dict)
             logger.debug(response.text)
             lrc_dic = lrc2dic.lrc2dict(lyric['lyric'])
