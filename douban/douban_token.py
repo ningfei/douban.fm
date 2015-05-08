@@ -263,9 +263,9 @@ class Doubanfm(object):
                         logger.debug('Write data to ' + config.PATH_COOKIE)                        
                     logger.info("Updating played record.")
                     play_record = dic['user_info']['play_record']
-                    self.played = play_record['played']
-                    self.liked = play_record['liked']
-                    self.faved = play_record['fav_chls_count']-1
+                    self.played = str(play_record['played'])
+                    self.liked = str(play_record['liked'])
+                    self.faved = str(play_record['fav_chls_count']-1)
                 
                 # 获取token                           
                 login_data = {
