@@ -24,6 +24,7 @@ TITLE:界面标题的设定
 #######################################################################
 
 import subprocess
+import sys
 import getch
 import config
 from colors import color_func
@@ -45,7 +46,7 @@ class Cli(object):
         self.topline = 0  # lines
         self.displayline = self.markline  # 初始化歌曲信息显示行
         self.screen_height, self.screen_width = self.linesnum()  # 屏幕显示行数
-        subprocess.call('echo  "\033[?25l"', shell=True)  # 取消光标
+        sys.stderr.write('\x1b[?25l')  # 取消光标
 
     def linesnum(self):
         '''测试屏幕显示行数,每行字符数'''
@@ -56,7 +57,7 @@ class Cli(object):
     def display(self):
         '''展示窗口'''
         self.screen_height, self.screen_width = self.linesnum()  # 屏幕显示行数
-        subprocess.call('clear', shell=True)  # 清屏
+        sys.stderr.write('\x1b[2J\x1b[H')   # 清屏
         print
         print self.TITLE
         top = self.topline
