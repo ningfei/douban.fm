@@ -145,7 +145,10 @@ class Win(cli.Cli):
         title = color_func(self.c['PLAYINGSONG']['title'])(song['title'])
         albumtitle = color_func(self.c['PLAYINGSONG']['albumtitle'])(song['albumtitle'])
         artist = color_func(self.c['PLAYINGSONG']['artist'])(song['artist'])
-        public_time = color_func(self.c['PLAYINGSONG']['publictime'])(song['public_time']) or ''
+        if song['public_time']:
+            public_time = color_func(self.c['PLAYINGSONG']['publictime'])(song['public_time'])
+        else:
+            public_time = ''
         self.SUFFIX_SELECTED = (
             love + ' ' +
             title + ' • ' +
