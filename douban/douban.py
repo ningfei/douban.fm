@@ -142,8 +142,6 @@ class Win(cli.Cli):
             love = self.LOVE.translate(None,'\x01\x02')
         else:
             love = ''
-        if not song.has_key('public_time'):
-            song['public_time']=''
         title = color_func(self.c['PLAYINGSONG']['title'])(song['title'])
         albumtitle = color_func(self.c['PLAYINGSONG']['albumtitle'])(song['albumtitle'])
         artist = color_func(self.c['PLAYINGSONG']['artist'])(song['artist'])
@@ -273,6 +271,12 @@ class Win(cli.Cli):
         self.lrc_dict = {}  # 歌词清空
         self.songtime = 0  # 重置歌曲时间
         self.playingsong = self.get_song()
+        if not self.playingsong.has_key('public_time'):
+            self.playingsong['public_time'] = ''
+        if not self.playingsong.has_key('kbps'):
+            self.playingsong['kbps'] = '64'
+        if not self.playingsong.has_key('rating_avg'):
+            self.playingsong['rating_avg'] = 1
         if not self.lock_loop:
             self.playingsong['time'] = time.strftime("%Y-%m-%d %H:%M:%S",
                                                      time.localtime())
@@ -545,8 +549,6 @@ class Lrc(cli.Cli):
 
         # 歌曲信息居中
         song = self.win.playingsong
-        if not song.has_key('public_time'):
-            song['public_time']=''
         tmp = (
             song['title'] +
             song['albumtitle'] +
