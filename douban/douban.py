@@ -124,7 +124,6 @@ class Win(cli.Cli):
         # 箭头所指行前缀
         cli.Cli.PREFIX_SELECTED = color_func(self.c['LINE']['arrow'])('  > ')
         cli.Cli.LOVE = color_func(self.c['PLAYINGSONG']['like'])(' ❤ ')
-        asd
         self.TITLE = cli.Cli.TITLE +\
             color_func(self.c['TITLE']['doubanfm'])(' Douban FM ') \
             if not self.douban.lastfm\

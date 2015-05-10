@@ -240,7 +240,10 @@ class Doubanfm(object):
                 self.user_name
             logger.info("Updating played record.")
             resp = requests.get('http://douban.fm',cookies=self.cookie)
-            self.played = re.findall('rec_played">(\d+?)<',resp.text)[0]
+            try:
+                self.played = re.findall('rec_played">(\d+?)<',resp.text)[0]
+            except IndexError:
+                sys.exit('发现一个错误哦(＞０＜)...试试重新登录咯？')
             self.liked = re.findall('rec_liked">(\d+?)<',resp.text)[0]
             self.faved = re.findall('faved">(\d+?)<',resp.text)[0]
         else:
