@@ -155,7 +155,7 @@ class Win(cli.Cli):
             artist + ' ' +
             public_time
         ).replace('\\', '')
-        
+
     def thread(self, target, args=()):
         '''启动新线程'''
         threading.Thread(target=target, args=args).start()
@@ -759,7 +759,7 @@ class History(cli.Cli):
 
 def main():
     parser = argparse.ArgumentParser(description='Douban FM')
-    parser.add_argument('update', nargs='?', type=bool, default=False)
+    parser.add_argument('-u', '--update', nargs='?', type=bool, const=True, default=False)
     args = parser.parse_args()
     douban = douban_token.Doubanfm()
     douban.init_login(args.update)  # 登录
