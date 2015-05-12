@@ -17,6 +17,7 @@ import threading
 import time
 import os
 import sys
+import re
 import logging
 import argparse
 
@@ -253,6 +254,8 @@ class Win(cli.Cli):
             # If self.q (about to quit), just quit
             if self.q:
                 return
+            self.douban.played = str(int(self.douban.played) + 1)
+            self.TITLE = re.sub(u'累计收听\d+', u'累计收听' + self.douban.played, self.TITLE)
             self.thread(self.douban.submit_music, args=(self.playingsong,))
             # If some thread has already called play(), just pass
             if not self.lock_start:
@@ -392,12 +395,16 @@ class Win(cli.Cli):
         if self.playingsong:
             if not self.playingsong['like']:
                 self.SUFFIX_SELECTED = self.LOVE + self.SUFFIX_SELECTED
+                self.douban.liked = str(int(self.douban.liked) + 1)
+                self.TITLE = re.sub(u'加红星\d+', u'加红星' + self.douban.liked, self.TITLE)
                 self.display()
                 self.douban.rate_music(self.playingsong)
                 self.playingsong['like'] = 1
                 self.noti.send_notify(self.playingsong, '标记红心')
             else:
                 self.SUFFIX_SELECTED = self.SUFFIX_SELECTED[len(self.LOVE):]
+                self.douban.liked = str(int(self.douban.liked) - 1)
+                self.TITLE = re.sub(u'加红星\d+', u'加红星' + self.douban.liked, self.TITLE)
                 self.display()
                 self.douban.unrate_music(self.playingsong)
                 self.playingsong['like'] = 0
