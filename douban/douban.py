@@ -123,7 +123,7 @@ class Win(cli.Cli):
     def reload_theme(self):
         # 箭头所指行前缀
         cli.Cli.PREFIX_SELECTED = color_func(self.c['LINE']['arrow'])('  > ')
-        cli.Cli.LOVE = color_func(self.c['PLAYINGSONG']['like'])(' ❤ ')
+        cli.Cli.LOVE = color_func(self.c['PLAYINGSONG']['like'])(' ❤ ').translate(None,'\x01\x02')
         self.TITLE = cli.Cli.TITLE +\
             color_func(self.c['TITLE']['doubanfm'])(' Douban FM ') \
             if not self.douban.lastfm\
@@ -138,7 +138,7 @@ class Win(cli.Cli):
 
     def set_suffix_selected(self, song):
         if song['like'] == 1:
-            love = self.LOVE.translate(None,'\x01\x02')
+            love = self.LOVE
         else:
             love = ''
         title = color_func(self.c['PLAYINGSONG']['title'])(song['title'])
