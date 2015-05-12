@@ -183,7 +183,7 @@ class Doubanfm(object):
 
     def build_login_form(self, bid='"01234567890"'):
         '''构造登录表单'''
-        
+
         s = requests.session()
         print 'Retrieve Captcha...'
         resp = s.get('http://douban.fm/j/new_captcha', cookies={'bid': bid})
@@ -192,18 +192,18 @@ class Doubanfm(object):
         Image.open(StringIO(resp.content)).show()
         captcha = raw_input('验证码: ')
         [proc.kill() for proc in psutil.process_iter() if proc.name() == 'display']
-        
+
         form = {}
         form['data'] = {
             'source': 'radio',
-            'alias': self.email, 
+            'alias': self.email,
             'form_password': self.password,
             'captcha_solution': captcha,
             'captcha_id': captcha_id,
             'remember': 'on',
             'task': 'sync_channel_list'
         }
-        
+
         form['headers'] = {
             'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64)',
             'Accept': 'application/json, text/javascript, */*; q=0.01',
@@ -211,7 +211,7 @@ class Doubanfm(object):
             'Accept-Encoding': 'gzip, deflate',
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'X-Requested-With': 'XMLHttpRequest',
-            'Referer': 'http://douban.fm/',      
+            'Referer': 'http://douban.fm/',
             'Connection': 'keep-alive'
         }
         return form
@@ -239,23 +239,23 @@ class Doubanfm(object):
             print '\033[31m♥\033[0m Get local token - Username: \033[33m%s\033[0m' %\
                 self.user_name
             logger.info("Updating played record.")
-            resp = requests.get('http://douban.fm',cookies=self.cookie)
+            resp = requests.get('http://douban.fm', cookies=self.cookie)
             try:
-                self.played = re.findall('rec_played">(\d+?)<',resp.text)[0]
+                self.played = re.findall('rec_played">(\d+?)<', resp.text)[0]
             except IndexError:
                 sys.exit('发现一个错误哦(＞０＜)...试试重新登录咯？')
-            self.liked = re.findall('rec_liked">(\d+?)<',resp.text)[0]
-            self.faved = re.findall('faved">(\d+?)<',resp.text)[0]
+            self.liked = re.findall('rec_liked">(\d+?)<', resp.text)[0]
+            self.faved = re.findall('faved">(\d+?)<', resp.text)[0]
         else:
             # 未登陆
             logger.info('First time logging in douban.fm.')
-            bid = '"'+ ''.join(random.choice(string.ascii_letters + string.digits) for x in range(11)) + '"'
+            bid = '"' + ''.join(random.choice(string.ascii_letters + string.digits) for x in range(11)) + '"'
             while True:
                 self.email = raw_input('Email: ')
                 self.password = getpass.getpass('Password: ')
-                bid = '"'+ ''.join(random.choice(string.ascii_letters + string.digits) for x in range(11)) + '"'
+                bid = '"' + ''.join(random.choice(string.ascii_letters + string.digits) for x in range(11)) + '"'
                 # 获取cookie
-                form = self.build_login_form(bid)              
+                form = self.build_login_form(bid)
                 resp = requests.post('http://douban.fm/j/login', data=form['data'], headers=form['headers'], cookies={'bid': bid})
                 dic = json.loads(resp.text, object_hook=_decode_dict)
                 if dic['r'] == 1:
@@ -266,14 +266,14 @@ class Doubanfm(object):
                     logger.info('Get cookie successfully!')
                     with open(config.PATH_COOKIE, 'w') as f:
                         pickle.dump(self.cookie, f)
-                        logger.debug('Write data to ' + config.PATH_COOKIE)                        
+                        logger.debug('Write data to ' + config.PATH_COOKIE)
                     logger.info("Updating played record.")
                     play_record = dic['user_info']['play_record']
                     self.played = str(play_record['played'])
                     self.liked = str(play_record['liked'])
-                    self.faved = str(play_record['fav_chls_count']-1)
-                
-                # 获取token                           
+                    self.faved = str(play_record['fav_chls_count'] - 1)
+
+                # 获取token
                 login_data = {
                     'app_name': 'radio_desktop_win',
                     'version': '100',
@@ -313,27 +313,27 @@ class Doubanfm(object):
     def get_channels(self):
         '''获取channel列表，将channel name/id存入self._channel_list'''
         if not os.path.exists(config.PATH_CHANNEL) or self.update:
-	        # 红心兆赫需要手动添加
-	        self._channel_list = [{
-	            'name': '红心兆赫',
-	            'channel_id': -3
-	        }]
-	        # 固定兆赫
-	        r = requests.get('http://www.douban.com/j/app/radio/channels', cookies=self.cookie)
-	        self._channel_list += json.loads(r.text, object_hook=_decode_dict)['channels'][0:22]
-	        self._channel_list = [{'name': c['name'],'channel_id': c['channel_id']} for c in self._channel_list]
-	        # 收藏兆赫
-	        resp = requests.get('http://douban.fm/j/fav_channels', cookies=self.cookie)
-	        collect = json.loads(resp.text, object_hook=_decode_dict)['channels']
-	        collect = [{'name': '*'+c['name']+'*','channel_id': str(c['id'])} for c in collect]
-	        
-	        self._channel_list[2:2] = collect
-	        with open(config.PATH_CHANNEL, 'w') as f:
-	        	pickle.dump(self._channel_list, f)
-	        	logger.debug('Write data to ' + config.PATH_CHANNEL)
+            # 红心兆赫需要手动添加
+            self._channel_list = [{
+                'name': '红心兆赫',
+                'channel_id': -3
+            }]
+            # 固定兆赫
+            r = requests.get('http://www.douban.com/j/app/radio/channels', cookies=self.cookie)
+            self._channel_list += json.loads(r.text, object_hook=_decode_dict)['channels'][0:22]
+            self._channel_list = [{'name': c['name'], 'channel_id': c['channel_id']} for c in self._channel_list]
+            # 收藏兆赫
+            resp = requests.get('http://douban.fm/j/fav_channels', cookies=self.cookie)
+            collect = json.loads(resp.text, object_hook=_decode_dict)['channels']
+            collect = [{'name': '*' + c['name'] + '*', 'channel_id': str(c['id'])} for c in collect]
+
+            self._channel_list[2:2] = collect
+            with open(config.PATH_CHANNEL, 'w') as f:
+                pickle.dump(self._channel_list, f)
+                logger.debug('Write data to ' + config.PATH_CHANNEL)
         else:
             with open(config.PATH_CHANNEL, 'r') as f:
-	    	    self._channel_list = pickle.load(f)
+                self._channel_list = pickle.load(f)
 
     @property
     def channels(self):

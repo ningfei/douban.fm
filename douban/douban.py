@@ -36,6 +36,7 @@ logger.setLevel(logging.INFO)
 
 
 class Win(cli.Cli):
+
     '''窗体及播放控制'''
     KEYS = {
         'UP': 'k',
@@ -52,9 +53,9 @@ class Win(cli.Cli):
         'MUTE': 'm',
         'LRC': 'o',
         'HELP': 'h'
-        }
+    }
     FNULL = open(os.devnull, 'w')
-    RATE = ['★'*i for i in range(1, 6)]  # 歌曲评分
+    RATE = ['★' * i for i in range(1, 6)]  # 歌曲评分
     PRO = on_light_red(' PRO ')
 
     def __init__(self, douban):
@@ -105,9 +106,10 @@ class Win(cli.Cli):
             else color_func(self.c['TITLE']['doubanfm'])(' Last.fm ')
 
         self.TITLE += '\ ' + \
-            color_func(self.c['TITLE']['username'])(self.douban.user_name + \
-            u' 累计收听' + self.douban.played + u'首 加红星' + \
-            self.douban.liked + u'首 收藏兆赫' + self.douban.faved + u'个') + \
+            color_func(self.c['TITLE']['username'])(
+                self.douban.user_name +
+                u' 累计收听' + self.douban.played + u'首 加红星' + self.douban.liked +
+                u'首 收藏兆赫' + self.douban.faved + u'个') + \
             ' \ >>\r'
 
         # 启动自动播放
@@ -124,16 +126,17 @@ class Win(cli.Cli):
     def reload_theme(self):
         # 箭头所指行前缀
         cli.Cli.PREFIX_SELECTED = color_func(self.c['LINE']['arrow'])('  > ')
-        cli.Cli.LOVE = color_func(self.c['PLAYINGSONG']['like'])(' ❤ ').translate(None,'\x01\x02')
+        cli.Cli.LOVE = color_func(self.c['PLAYINGSONG']['like'])(' ❤ ').translate(None, '\x01\x02')
         self.TITLE = cli.Cli.TITLE +\
             color_func(self.c['TITLE']['doubanfm'])(' Douban FM ') \
             if not self.douban.lastfm\
             else color_func(self.c['TITLE']['doubanfm'])(' Last.fm ')
 
         self.TITLE += '\ ' + \
-            color_func(self.c['TITLE']['username'])(self.douban.user_name + \
-            u' 累计收听' + self.douban.played + u'首 加红星' + \
-            self.douban.liked + u'首 收藏兆赫' + self.douban.faved + u'个') + \
+            color_func(self.c['TITLE']['username'])(
+                self.douban.user_name +
+                u' 累计收听' + self.douban.played + u'首 加红星' + self.douban.liked +
+                u'首 收藏兆赫' + self.douban.faved + u'个') + \
             ' \ >>'
         self.set_suffix_selected(self.playingsong)
 
@@ -203,7 +206,7 @@ class Win(cli.Cli):
                     color_func(self.c['TITLE']['pro'])(title_pro),
                     color_func(self.c['TITLE']['kbps'])(title_kbps),
                     color_func(self.c['TITLE']['time'])(title_time),
-                    color_func(self.c['TITLE']['rate'])(title_rate+' '),
+                    color_func(self.c['TITLE']['rate'])(title_rate + ' '),
                     color_func(self.c['TITLE']['vol'])(title_vol),
                     color_func(self.c['TITLE']['state'])(title_loop)
                 ]
@@ -276,11 +279,11 @@ class Win(cli.Cli):
         self.lrc_dict = {}  # 歌词清空
         self.songtime = 0  # 重置歌曲时间
         self.playingsong = self.get_song()
-        if not self.playingsong.has_key('public_time'):
+        if 'public_time' not in self.playingsong:
             self.playingsong['public_time'] = ''
-        if not self.playingsong.has_key('kbps'):
+        if 'kbps' not in self.playingsong:
             self.playingsong['kbps'] = '64'
-        if not self.playingsong.has_key('rating_avg'):
+        if 'rating_avg' not in self.playingsong:
             self.playingsong['rating_avg'] = 1
         if not self.lock_loop:
             self.playingsong['time'] = time.strftime("%Y-%m-%d %H:%M:%S",
@@ -481,7 +484,9 @@ class Win(cli.Cli):
 
 
 class Lrc(cli.Cli):
+
     '''歌词显示界面'''
+
     def __init__(self, lrc_dict, win):
         self.win = win
         self.lrc_dict = lrc_dict
@@ -540,15 +545,15 @@ class Lrc(cli.Cli):
         print self.win.TITLE
         print
         for linenum in range(self.screen_height - 2):
-            if self.screen_height/2 - linenum > self.markline - self.topline or \
-                    linenum - self.screen_height/2 >= len(self.lines) - self.markline:
+            if self.screen_height / 2 - linenum > self.markline - self.topline or \
+                    linenum - self.screen_height / 2 >= len(self.lines) - self.markline:
                 print '\r'
             else:
-                line = self.lines[self.markline - (self.screen_height/2 - linenum)]
+                line = self.lines[self.markline - (self.screen_height / 2 - linenum)]
                 line = line.strip()
                 l = self.center_num(line)
                 flag_num = (self.screen_width - l) / 2
-                if linenum == self.screen_height/2:
+                if linenum == self.screen_height / 2:
                     i = color_func(self.c['LRC']['highlight'])(line)
                     print ' ' * flag_num + i + '\r'
                 else:
@@ -573,7 +578,9 @@ class Lrc(cli.Cli):
 
 
 class Help(cli.Cli):
+
     '''帮助界面，查看快捷键'''
+
     def __init__(self, win):
         self.win = win
         self.win.thread(self.display_help)
@@ -592,25 +599,27 @@ class Help(cli.Cli):
         print
         print self.win.TITLE
         print
-        print ' '*5 + green('移动') + ' '*17 + green('音乐') + '\r'
-        print ' '*5 + '[%(DOWN)s] ---> 下          [space] ---> 播放' % keys + '\r'
-        print ' '*5 + '[%(UP)s] ---> 上          [%(OPENURL)s] ---> 打开歌曲主页' % keys + '\r'
-        print ' '*5 + '[%(TOP)s] ---> 移到最顶    [%(NEXT)s] ---> 下一首' % keys + '\r'
-        print ' '*5 + '[%(BOTTOM)s] ---> 移到最底    [%(RATE)s] ---> 喜欢/取消喜欢' % keys + '\r'
-        print ' '*26 + '[%(BYE)s] ---> 不再播放' % keys + '\r'
+        print ' ' * 5 + green('移动') + ' ' * 17 + green('音乐') + '\r'
+        print ' ' * 5 + '[%(DOWN)s] ---> 下          [space] ---> 播放' % keys + '\r'
+        print ' ' * 5 + '[%(UP)s] ---> 上          [%(OPENURL)s] ---> 打开歌曲主页' % keys + '\r'
+        print ' ' * 5 + '[%(TOP)s] ---> 移到最顶    [%(NEXT)s] ---> 下一首' % keys + '\r'
+        print ' ' * 5 + '[%(BOTTOM)s] ---> 移到最底    [%(RATE)s] ---> 喜欢/取消喜欢' % keys + '\r'
+        print ' ' * 26 + '[%(BYE)s] ---> 不再播放' % keys + '\r'
 
-        print ' '*5 + green('音量') + ' '*17 + '[%(PAUSE)s] ---> 暂停' % keys + '\r'
-        print ' '*5 + '[=] ---> 增          [%(QUIT)s] ---> 退出' % keys + '\r'
-        print ' '*5 + '[-] ---> 减          [%(LOOP)s] ---> 单曲循环' % keys + '\r'
-        print ' '*5 + '[%(MUTE)s] ---> 静音        [e] ---> 播放列表' % keys + '\r'
+        print ' ' * 5 + green('音量') + ' ' * 17 + '[%(PAUSE)s] ---> 暂停' % keys + '\r'
+        print ' ' * 5 + '[=] ---> 增          [%(QUIT)s] ---> 退出' % keys + '\r'
+        print ' ' * 5 + '[-] ---> 减          [%(LOOP)s] ---> 单曲循环' % keys + '\r'
+        print ' ' * 5 + '[%(MUTE)s] ---> 静音        [e] ---> 播放列表' % keys + '\r'
 
         print
-        print ' '*5 + green('歌词') + '\r'
-        print ' '*5 + '[%(LRC)s] ---> 歌词' % keys + '\r'
+        print ' ' * 5 + green('歌词') + '\r'
+        print ' ' * 5 + '[%(LRC)s] ---> 歌词' % keys + '\r'
 
 
 class Quit(Help):
+
     '''退出界面'''
+
     def __init__(self, win):
         self.win = win
         subprocess.check_call('clear', shell=True)
@@ -621,7 +630,7 @@ class Quit(Help):
     def display(self):
         for i in range(self.screen_height):
             if i == self.screen_height / 2:
-                print ' ' * ((self.screen_width - 18)/2) \
+                print ' ' * ((self.screen_width - 18) / 2) \
                     + red('Are you sure? (Y/n)'),
             else:
                 print
@@ -634,7 +643,9 @@ class Quit(Help):
 
 
 class History(cli.Cli):
+
     '''历史记录'''
+
     def __init__(self, win):
         self.win = win
         self.KEYS = self.win.KEYS
@@ -646,10 +657,10 @@ class History(cli.Cli):
         self.state = 0
         self.play_tag = '♬♬♬♬♬♬'
         self.subtitle = [
-                on_cyan('Playlist') + ' '*5 + 'History' + ' '*5 + 'Rate',
-                'Playlist' + ' '*5 + on_cyan('History') + ' '*5 + 'Rate',
-                'Playlist' + ' '*5 + 'History' + ' '*5 + on_cyan('Rate')
-                ]
+            on_cyan('Playlist') + ' ' * 5 + 'History' + ' ' * 5 + 'Rate',
+            'Playlist' + ' ' * 5 + on_cyan('History') + ' ' * 5 + 'Rate',
+            'Playlist' + ' ' * 5 + 'History' + ' ' * 5 + on_cyan('Rate')
+        ]
         # hitory 使用win.history
         self.rate = []
         self.playlist = []
@@ -725,7 +736,7 @@ class History(cli.Cli):
             c = getch.getch()
             if c == self.KEYS['UP'] or c == 'A' and self.markline != 1:
                 self.updown(-1)
-            elif c == self.KEYS['DOWN'] or c =='B':
+            elif c == self.KEYS['DOWN'] or c == 'B':
                 self.updown(1)
             elif c == self.KEYS['QUIT']:
                 self.win.state = 0
@@ -744,7 +755,7 @@ class History(cli.Cli):
             elif c == 'h' or c == 'D':
                 self.state -= 1 if self.state != 0 else -2
                 self.get_lines()
-            elif c == 'l' or c== 'C':
+            elif c == 'l' or c == 'C':
                 self.state += 1 if self.state != 2 else -2
                 self.get_lines()
 
@@ -760,7 +771,7 @@ class History(cli.Cli):
                 0, self.win.history[self.markline + self.topline - 1]
             )
         elif self.state == 2:
-            self.win.playlist = self.rate[self.displayline-1:]
+            self.win.playlist = self.rate[self.displayline - 1:]
         self.win.set_next()
 
 

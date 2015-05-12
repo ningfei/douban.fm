@@ -43,7 +43,7 @@ class Player(object):
         event: 传入的一个 Event ，用于通知播放完成
         default_volume: 默认音量
         """
-        self.sub_proc = None            # subprocess instance
+        self.sub_proc = None  # subprocess instance
         self._args = [self._player_command] + self._default_args
         self._exit_event = event
         self._volume = default_volume

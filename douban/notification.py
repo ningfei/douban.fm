@@ -72,10 +72,11 @@ def send_OS_X_notify(title, content, img_path):
         # notification.setContentImage_(image)
         notification.set_identityImage_(image)
     notification.setDeliveryDate_(
-            NSDate.dateWithTimeInterval_sinceDate_(0, NSDate.date())
+        NSDate.dateWithTimeInterval_sinceDate_(0, NSDate.date())
     )
     NSUserNotificationCenter.defaultUserNotificationCenter().\
         scheduleNotification_(notification)
+
 
 class Notify(object):
 
@@ -106,7 +107,7 @@ class Notify(object):
 
         old_title = playingsong['title']
         self.cover_file = tempfile.NamedTemporaryFile(
-                suffix='.jpg', dir=self._tempdir)
+            suffix='.jpg', dir=self._tempdir)
         if not self.get_pic(playingsong, self.cover_file.name):
             return
         title = playingsong['title']
@@ -115,8 +116,8 @@ class Notify(object):
             return
         self.has_cover = True
         content = playingsong['artist'] + ' - ' + playingsong['albumtitle']
-        send_notification(title.decode('utf-8'),\
-                content.decode('utf-8'), self.cover_file.name)
+        send_notification(title.decode('utf-8'),
+                          content.decode('utf-8'), self.cover_file.name)
 
     def send_notify(self, playingsong, content=''):
         '''需要解码一下,通知需要unicode编码'''
@@ -139,6 +140,7 @@ class Notify(object):
             logger.info('Temporary files removed.')
         except OSError:
             pass
+
 
 def main():
     send_notification(title='Test title', content='test content')

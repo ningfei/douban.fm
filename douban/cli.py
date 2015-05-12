@@ -34,7 +34,7 @@ class Cli(object):
     THEME = ['default', 'larapaste', 'monokai', 'tomorrow']
     c = config.get_default_theme(THEME[0])
     PREFIX_SELECTED = color_func(c['LINE']['arrow'])('  > ')  # 箭头所指行前缀
-    LOVE = color_func(c['PLAYINGSONG']['like'])(' ❤ ', 'red').translate(None,'\x01\x02')
+    LOVE = color_func(c['PLAYINGSONG']['like'])(' ❤ ', 'red').translate(None, '\x01\x02')
     PREFIX_DESELECTED = '    '
     SUFFIX_SELECTED = ''  # 空格标记行后缀
     SUFFIX_DESELECTED = ''
