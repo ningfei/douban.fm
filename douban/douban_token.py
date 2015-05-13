@@ -319,8 +319,11 @@ class Doubanfm(object):
                 'channel_id': -3
             }]
             # 固定兆赫
-            r = requests.get('http://www.douban.com/j/app/radio/channels', cookies=self.cookie)
-            self._channel_list += json.loads(r.text, object_hook=_decode_dict)['channels'][0:22]
+            resp = requests.get('http://www.douban.com/j/app/radio/channels', cookies=self.cookie)
+            try:
+                self._channel_list += json.loads(resp.text, object_hook=_decode_dict)['channels'][0:22]
+            except ValueError:
+                sys.exit('你才是机器人！(＞０＜)...')
             self._channel_list = [{'name': c['name'], 'channel_id': c['channel_id']} for c in self._channel_list]
             # 收藏兆赫
             resp = requests.get('http://douban.fm/j/fav_channels', cookies=self.cookie)
