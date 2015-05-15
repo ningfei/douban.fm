@@ -101,9 +101,7 @@ class Win(cli.Cli):
         super(Win, self).__init__(self.lines)
 
         self.TITLE += \
-            color_func(self.c['TITLE']['doubanfm'])(' Douban FM ') \
-            if not self.douban.lastfm\
-            else color_func(self.c['TITLE']['doubanfm'])(' Last.fm ')
+            color_func(self.c['TITLE']['doubanfm'])(' Douban FM ')
 
         self.TITLE += '\ ' + \
             color_func(self.c['TITLE']['username'])(
@@ -128,9 +126,7 @@ class Win(cli.Cli):
         cli.Cli.PREFIX_SELECTED = color_func(self.c['LINE']['arrow'])('  > ')
         cli.Cli.LOVE = color_func(self.c['PLAYINGSONG']['like'])(' ❤ ').translate(None, '\x01\x02')
         self.TITLE = cli.Cli.TITLE +\
-            color_func(self.c['TITLE']['doubanfm'])(' Douban FM ') \
-            if not self.douban.lastfm\
-            else color_func(self.c['TITLE']['doubanfm'])(' Last.fm ')
+            color_func(self.c['TITLE']['doubanfm'])(' Douban FM ')
 
         self.TITLE += '\ ' + \
             color_func(self.c['TITLE']['username'])(
@@ -302,8 +298,6 @@ class Win(cli.Cli):
 
         if self.state == 1:  # 获取歌词
             self.thread(self.display_lrc)
-        # Will do nothing if not log into Last.fm
-        self.thread(self.douban.scrobble_now_playing)
         self.lock_start = False
 
     def pause(self):
