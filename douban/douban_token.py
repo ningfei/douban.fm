@@ -187,7 +187,7 @@ class Doubanfm(object):
                     logger.debug(dic['err_msg'])
                     continue
                 else:
-                    self.cookie = {'bid': bid, 'dbcl2': resp.cookies['dbcl2'], 'fmNlogin': '"y"'}
+                    self.cookie = {'bid': bid, 'dbcl2': resp.cookies['dbcl2'], 'ck': dic['user_info']['ck'], 'fmNlogin': '"y"'}
                     logger.info('Get cookie successfully!')
                     with open(config.PATH_COOKIE, 'w') as f:
                         pickle.dump(self.cookie, f)
@@ -246,7 +246,7 @@ class Doubanfm(object):
             # 固定兆赫
             resp = requests.get('http://www.douban.com/j/app/radio/channels', cookies=self.cookie)
             try:
-                self._channel_list += json.loads(resp.text, object_hook=_decode_dict)['channels'][0:22]
+                self._channel_list += json.loads(resp.text, object_hook=_decode_dict)['channels'][0:20]
             except ValueError:
                 sys.exit('你才是机器人！(＞０＜)...')
             self._channel_list = [{'name': c['name'], 'channel_id': c['channel_id']} for c in self._channel_list]
