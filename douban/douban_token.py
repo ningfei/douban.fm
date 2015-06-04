@@ -102,9 +102,9 @@ class Doubanfm(object):
         # 存储的default_channel是行数而不是真正发送数据的channel_id
         # 这里需要进行转化一下
         self.set_channel(self.default_channel)
-        print '\033[31m♥\033[0m Check PRO ',
-        # self.is_pro()
-        print '[\033[32m OK \033[0m]'
+        # print '\033[31m♥\033[0m Check PRO ',
+        # # self.is_pro()
+        # print '[\033[32m OK \033[0m]'
 
     def build_login_form(self, bid='"01234567890"'):
         '''构造登录表单'''

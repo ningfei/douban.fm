@@ -56,7 +56,7 @@ class Win(cli.Cli):
     }
     FNULL = open(os.devnull, 'w')
     RATE = ['★' * i for i in range(1, 6)]  # 歌曲评分
-    PRO = on_light_red(' PRO ')
+    # PRO = on_light_red(' PRO ')
 
     def __init__(self, douban):
         # 线程锁
@@ -192,14 +192,14 @@ class Win(cli.Cli):
                 sec = int(rest_time) % 60
                 show_time = str(minute).zfill(2) + ':' + str(sec).zfill(2)
 
-                title_pro = '' if self.playingsong['kbps'] == '64' else self.PRO
+                # title_pro = '' if self.playingsong['kbps'] == '64' else self.PRO
                 title_kbps = self.playingsong['kbps'] + 'kbps'
                 title_time = show_time
                 title_rate = self.RATE[int(round(self.playingsong['rating_avg'])) - 1]
                 title_vol = '✖' if self.lock_muted else str(self._volume) + '%'
                 title_loop = '↺' if self.lock_loop else '→'
                 title = [
-                    color_func(self.c['TITLE']['pro'])(title_pro),
+                    # color_func(self.c['TITLE']['pro'])(title_pro),
                     color_func(self.c['TITLE']['kbps'])(title_kbps),
                     color_func(self.c['TITLE']['time'])(title_time),
                     color_func(self.c['TITLE']['rate'])(title_rate + ' '),
